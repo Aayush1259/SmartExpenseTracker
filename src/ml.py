@@ -37,7 +37,7 @@ def categorize_expense(description: str):
         "miscellaneous"
     ]
     labels = ["Food", "Transport", "Housing", "Utilities", "Entertainment",
-              "Healthcare", "Education", "Shopping", "Insurance", "Other"]
+                "Healthcare", "Education", "Shopping", "Insurance", "Other"]
     vec = TfidfVectorizer()
     X_train = vec.fit_transform(texts)
     clf = MultinomialNB()
@@ -73,9 +73,9 @@ def smart_expense_insights(data: pd.DataFrame) -> str:
 
 def spending_categories(data: pd.DataFrame) -> dict:
     mapping = {
-       "Must": ["Housing", "Utilities", "Food", "Transport"],
-       "Need": ["Healthcare", "Insurance", "Education"],
-       "Want": ["Entertainment", "Shopping", "Other"]
+        "Must": ["Housing", "Utilities", "Food", "Transport"],
+        "Need": ["Healthcare", "Insurance", "Education"],
+        "Want": ["Entertainment", "Shopping", "Other"]
     }
     cat_dict = {"Must": 0, "Need": 0, "Want": 0}
     for _, row in data.iterrows():
