@@ -1,6 +1,3 @@
-# SmartExpenseTracker
-Mini Project of Expense Tracker
-
 # Smart Expense Tracker
 
 Smart Expense Tracker is a lightweight personal finance management application built using Python, Tkinter, and SQLite. The app allows users to record their expenses, export data, and view interactive visual analytics, including weekly, monthly, and yearly breakdowns. It also integrates basic machine learning features such as auto-categorization, anomaly detection, expense forecasting, and budget recommendations.
