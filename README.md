@@ -42,17 +42,16 @@ Smart Expense Tracker is a lightweight personal finance management application b
 
 ## Project Structure
 
-ExpenseTracker/ 
-├── src/ │ 
-├── main.py # Main application entry point │ 
-├── entry_section.py # Expense entry UI components │
-├── analytics_section.py # Analytics and visualization UI │ 
-├── database.py # SQLite database management │ 
-├── export.py # Data export functions (CSV/Excel) │ 
-└── ml.py # Machine learning functions (forecasting, categorization, anomaly detection, etc.) 
-├── expense_tracker.db # SQLite database file (created on the first run) 
-└── requirements.txt # Python dependencies
-
+  - ExpenseTracker/ 
+    - ├── src/ │ 
+      - ├── main.py # Main application entry point │ 
+      - ├── entry_section.py # Expense entry UI components │
+      - ├── analytics_section.py # Analytics and visualization UI │
+      - ├── database.py # SQLite database management │
+      - ├── export.py # Data export functions (CSV/Excel) │
+      - ├── ml.py # Machine learning functions (forecasting, categorization, anomaly detection, etc.)
+      - └── expense_tracker.db # SQLite database file (created on the first run)
+    - └── requirements.txt # Python dependencies
 
 
 ## Installation and Running
