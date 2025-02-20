@@ -3,7 +3,7 @@ Mini Project of Expense Tracker
 
 # Smart Expense Tracker
 
-Smart Expense Tracker is a lightweight personal finance management application built using Python, Tkinter, and SQLite. The app allows users to record their expenses, export data, and view interactive visual analytics including weekly, monthly, and yearly breakdowns. It also integrates basic machine learning features such as auto-categorization, anomaly detection, expense forecasting, and budget recommendations.
+Smart Expense Tracker is a lightweight personal finance management application built using Python, Tkinter, and SQLite. The app allows users to record their expenses, export data, and view interactive visual analytics, including weekly, monthly, and yearly breakdowns. It also integrates basic machine learning features such as auto-categorization, anomaly detection, expense forecasting, and budget recommendations.
 
 ## Features
 
@@ -16,7 +16,7 @@ Smart Expense Tracker is a lightweight personal finance management application b
 
 - **Interactive Analytics:**  
   - Visualize expenses with bar charts and pie charts.
-  - Filter data by a user-defined "From" and "To" date range.
+  - Filter data using a user-defined "From" and "To" date range.
   - Choose between weekly, monthly, or yearly analysis.
 
 - **Forecasting & Budgeting:**  
@@ -67,6 +67,7 @@ Smart Expense Tracker is a lightweight personal finance management application b
    ```bash
    git clone https://github.com/yourusername/SmartExpenseTracker.git
    cd SmartExpenseTracker
+
 2. **Install Dependencies:**
   ```bash
   pip install -r requirements.txt
@@ -80,11 +81,10 @@ Smart Expense Tracker is a lightweight personal finance management application b
 ## How It Works
 
 - **Expense Entry:**
-  - Users add expense records via a simple form (date, amount, category, description). Data is stored locally in an SQLite database.
+  - Users add expense records using a simple form (date, amount, category, description). Data is stored locally in an SQLite database.
 
 - **Data Analytics:**
-  - Users filter data using "From" and "To" date pickers and select an analysis type (Weekly, Monthly, or Yearly). The app resamples the data accordingly and displays:
-
+  - Users filter data using "From" and "To" date pickers and select an analysis type (Weekly, Monthly, or Yearly). The app resamples the data accordingly and displays the following:
     - Bar Charts for expense trends.
     - Pie Charts for expense distribution.
 
