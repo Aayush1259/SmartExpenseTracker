@@ -17,7 +17,8 @@ class Export:
                 writer.writerow(["ID", "Date", "Amount", "Category", "Description"])
                 writer.writerows(self.db.get_expenses())
             return True
-        except:
+        except Exception as e:
+            print("CSV export error:", e)
             return False
 
     def to_excel(self, filename: str) -> bool:
@@ -37,7 +38,6 @@ class Export:
             else:
                 data = pd.DataFrame(columns=["id", "date", "amount", "category", "description"])
 
-            # Summaries
             monthly = data.set_index('date').resample("M").sum().reset_index()
             monthly['date'] = monthly['date'].dt.strftime('%Y-%m')
             ws_monthly = wb.create_sheet("Monthly Summary")
@@ -59,25 +59,22 @@ class Export:
             self._format_workbook(wb)
             wb.save(filename)
             return True
-        except:
+        except Exception as e:
+            print("Excel export error:", e)
             return False
 
     def _format_workbook(self, wb: Workbook):
         header_font = Font(bold=True, color="FFFFFF")
         header_fill = PatternFill(start_color="32CD32", end_color="32CD32", fill_type="solid")
         alignment = Alignment(horizontal="center")
-
         for sheet in wb.worksheets:
-            # Format header
             for cell in sheet[1]:
                 cell.font = header_font
                 cell.fill = header_fill
                 cell.alignment = alignment
-            # Adjust column widths
             for col in sheet.columns:
                 max_length = max(len(str(cell.value)) if cell.value else 0 for cell in col)
                 sheet.column_dimensions[get_column_letter(col[0].column)].width = (max_length + 2) * 1.2
-
             if sheet.title == "Expenses":
                 for row in sheet.iter_rows(min_row=2, min_col=3, max_col=3):
                     for cell in row:
