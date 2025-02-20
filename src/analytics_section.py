@@ -1,14 +1,14 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
+from datetime import date, timedelta
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 import seaborn as sns
 from ml import (
     forecast_expenses, personalized_budget_recommendation,
-    smart_expense_insights, expense_splitter,
-    spending_categories, balance_trend
+    smart_expense_insights, spending_categories, balance_trend
 )
 
 TEXT_COLOR = "#000000"
@@ -17,6 +17,7 @@ ACCENT_RED = "#FF0000"
 ACCENT_YELLOW = "#FFFF00"
 ACCENT_BLUE = "#0000FF"
 GRAY_COLOR = "#A8A8A8"
+BACKGROUND_COLOR = "#FFFFFF"
 
 class AnalyticsFrame(ttk.Frame):
     def __init__(self, parent, db, *args, **kwargs):
@@ -31,12 +32,10 @@ class AnalyticsFrame(ttk.Frame):
         filter_frame = ttk.Frame(self)
         filter_frame.pack(fill=tk.X, pady=(0, 10))
         ttk.Label(filter_frame, text="From:", foreground=TEXT_COLOR).pack(side=tk.LEFT, padx=5)
-        self.start_date = DateEntry(filter_frame, width=12, background="white",
-                                    foreground="#000000", date_pattern="yyyy-mm-dd")
+        self.start_date = DateEntry(filter_frame, width=12, background="white", foreground="#000000", date_pattern="yyyy-mm-dd")
         self.start_date.pack(side=tk.LEFT, padx=5)
         ttk.Label(filter_frame, text="To:", foreground=TEXT_COLOR).pack(side=tk.LEFT, padx=5)
-        self.end_date = DateEntry(filter_frame, width=12, background="white",
-                                    foreground="#000000", date_pattern="yyyy-mm-dd")
+        self.end_date = DateEntry(filter_frame, width=12, background="white", foreground="#000000", date_pattern="yyyy-mm-dd")
         self.end_date.pack(side=tk.LEFT, padx=5)
         ttk.Button(filter_frame, text="Apply Filters", command=self.show_analysis).pack(side=tk.RIGHT, padx=5)
 
@@ -62,30 +61,25 @@ class AnalyticsFrame(ttk.Frame):
 
     def update_summary(self):
         data = pd.DataFrame(self.db.get_expenses(), columns=["id", "date", "amount", "category", "description"])
-        from ml import smart_expense_insights
         self.summary_label.config(text=f"Expense Insights: {smart_expense_insights(data)}")
 
     def show_analysis(self):
-        data = self._get_data()
+        data = pd.DataFrame(self.db.get_expenses(), columns=["id", "date", "amount", "category", "description"])
         if data.empty:
+            messagebox.showinfo("No Data", "No expense data available.")
             return
-
+        data["date"] = pd.to_datetime(data["date"])
         start = pd.to_datetime(self.start_date.get_date())
         end = pd.to_datetime(self.end_date.get_date())
         data = data[(data["date"] >= start) & (data["date"] <= end)]
         if data.empty:
             messagebox.showinfo("No Data", "No expense data in this range.")
             return
-
-        # Clear old charts
         for widget in self.canvas_frame.winfo_children():
             widget.destroy()
-
-        # Resample for Weekly / Monthly / Yearly, then bar chart + pie chart
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 3))
         sns.set_style("whitegrid")
         sns.set_palette([ACCENT_RED, ACCENT_YELLOW, ACCENT_BLUE])
-
         data.set_index("date", inplace=True)
         if self.analysis_type.get() == "Weekly":
             df_resampled = data.resample("W-Mon").sum()
@@ -96,7 +90,6 @@ class AnalyticsFrame(ttk.Frame):
         else:
             df_resampled = data.resample("Y").sum()
             self.plot_barchart(ax1, df_resampled, "Yearly")
-
         self.plot_pie_chart(ax2, data.reset_index())
         fig.tight_layout(pad=1.0)
         self.plot_canvas(fig)
@@ -124,8 +117,8 @@ class AnalyticsFrame(ttk.Frame):
             slice_colors = [ACCENT_RED, ACCENT_YELLOW, ACCENT_BLUE]
             explode = [0.1] + [0]*(len(cat_totals)-1)
             ax.pie(cat_totals, labels=cat_totals.index, autopct='%1.1f%%', startangle=90,
-                    colors=slice_colors*(len(cat_totals)//len(slice_colors)+1),
-                    explode=explode, textprops={'color':"#000000", 'fontsize':9})
+                colors=slice_colors*(len(cat_totals)//len(slice_colors)+1),
+                explode=explode, textprops={'color':"#000000", 'fontsize':9})
             ax.set_title("Expense Distribution", color=PRIMARY_COLOR, fontsize=10)
 
     def show_forecast(self):
@@ -137,7 +130,6 @@ class AnalyticsFrame(ttk.Frame):
         if fdf.empty:
             messagebox.showinfo("Forecast", "Unable to forecast.")
             return
-
         self._clear_charts()
         fig, ax = plt.subplots(figsize=(6, 3))
         ax.plot(fdf["date"], fdf["forecast"], marker='o', color=ACCENT_RED)
@@ -186,7 +178,6 @@ class AnalyticsFrame(ttk.Frame):
         self.plot_canvas(fig)
 
     def _get_data(self):
-        import pandas as pd
         data = pd.DataFrame(self.db.get_expenses(), columns=["id", "date", "amount", "category", "description"])
         if data.empty:
             messagebox.showinfo("No Data", "No expense data.")
@@ -202,5 +193,5 @@ class AnalyticsFrame(ttk.Frame):
         canvas = FigureCanvasTkAgg(figure, master=self.canvas_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        # **Close the figure to prevent "More than 20 figures" warning:**
+        import matplotlib.pyplot as plt
         plt.close(figure)
