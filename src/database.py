@@ -26,12 +26,38 @@ class Database:
             )
             self.conn.commit()
             return True
-        except:
+        except Exception as e:
+            print("Insert expense error:", e)
             return False
 
     def get_expenses(self):
-        self.cursor.execute("SELECT * FROM expenses")
-        return self.cursor.fetchall()
+        try:
+            self.cursor.execute("SELECT * FROM expenses")
+            return self.cursor.fetchall()
+        except Exception as e:
+            print("Get expenses error:", e)
+            return []
+
+    def delete_expense(self, expense_id):
+        try:
+            self.cursor.execute("DELETE FROM expenses WHERE id = ?", (expense_id,))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print("Delete expense error:", e)
+            return False
+
+    def update_expense(self, expense_id, date, amount, category, description):
+        try:
+            self.cursor.execute(
+                "UPDATE expenses SET date = ?, amount = ?, category = ?, description = ? WHERE id = ?",
+                (date, amount, category, description, expense_id)
+            )
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print("Update expense error:", e)
+            return False
 
     def __del__(self):
         if self.conn:
